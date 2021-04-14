@@ -1,0 +1,16 @@
+name: exhaustmap_with_trailing
+description: An exhausmap implementation with trailing
+version: 1.0.0
+author: Bjart eBore
+homepage: https://github.com/bjartebore/exhaustmap_with_trailing
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  rxdart: ^0.26.0
+
+dev_dependencies:
+  pedantic: ^1.9.0
+  test: ^1.16.5
+  import_sorter: ^4.2.2
