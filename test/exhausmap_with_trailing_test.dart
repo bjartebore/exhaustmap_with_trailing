@@ -1,9 +1,8 @@
 // Package imports:
+import 'package:exhaustmap_with_trailing/exhaustmap_with_trailing.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:test/test.dart';
 
-// Project imports:
-import 'package:exhaustmap_with_trailing/exhaustmap_with_trailing.dart';
 
 Future delay(int milliseconds) async {
   if (milliseconds == 0) {

@@ -7,7 +7,7 @@ import 'dart:async';
 import 'package:rxdart/src/utils/forwarding_sink.dart';
 import 'package:rxdart/src/utils/forwarding_stream.dart';
 
-class _ExhaustMapWithTrailingStreamSink<S, T> implements ForwardingSink<S, T> {
+class _ExhaustMapWithTrailingStreamSink<S, T> extends ForwardingSink<S, T> {
 
   _ExhaustMapWithTrailingStreamSink(this._mapper);
 
@@ -18,7 +18,7 @@ class _ExhaustMapWithTrailingStreamSink<S, T> implements ForwardingSink<S, T> {
   S? lastData;
 
   @override
-  void add(EventSink<T> sink, S? data) {
+  void onData(S? data) {
     if (_mapperSubscription != null) {
       // save the last if there are any
       lastData = data;
@@ -36,7 +36,7 @@ class _ExhaustMapWithTrailingStreamSink<S, T> implements ForwardingSink<S, T> {
         _mapperSubscription = null;
 
         if (!_inputClosed && lastData != null) {
-          add(sink, lastData);
+          onData(lastData);
         } else if (_inputClosed) {
           sink.close();
         }
@@ -45,15 +45,15 @@ class _ExhaustMapWithTrailingStreamSink<S, T> implements ForwardingSink<S, T> {
   }
 
   @override
-  void addError(EventSink<T> sink, dynamic e, [st]) => sink.addError(e, st);
+  void onError(Object error, StackTrace st) => sink.addError(error, st);
 
   @override
-  void close(EventSink<T> sink) {
+  void onDone() {
     _inputClosed = true;
 
     if (_mapperSubscription == null) {
       if (lastData != null) {
-        add(sink, lastData);
+        onData(lastData);
       } else {
         sink.close();
       }
@@ -61,22 +61,23 @@ class _ExhaustMapWithTrailingStreamSink<S, T> implements ForwardingSink<S, T> {
   }
 
   @override
-  FutureOr onCancel(EventSink<T> sink) => _mapperSubscription?.cancel();
+  FutureOr onCancel() => _mapperSubscription?.cancel();
 
   @override
-  void onListen(EventSink<T> sink) {}
+  void onListen() {}
 
   @override
-  void onPause(EventSink<T> sink, [Future? resumeSignal]) {
+  void onPause([Future? resumeSignal]) {
     if (lastData != null) {
-      add(sink, lastData);
+      onData(lastData);
     } else {
       _mapperSubscription?.pause();
     }
   }
 
   @override
-  void onResume(EventSink<T> sink) => _mapperSubscription?.resume();
+  void onResume() => _mapperSubscription?.resume();
+
 }
 
 class ExhaustMapWithTrailingStreamTransformer<S, T> extends StreamTransformerBase<S, T> {
@@ -86,7 +87,7 @@ class ExhaustMapWithTrailingStreamTransformer<S, T> extends StreamTransformerBas
 
   @override
   Stream<T> bind(Stream<S> stream) =>
-      forwardStream(stream, _ExhaustMapWithTrailingStreamSink<S, T>(mapper));
+      forwardStream(stream, () => _ExhaustMapWithTrailingStreamSink<S, T>(mapper));
 }
 
 extension ExhaustMapWithTrailingExtension<T> on Stream<T> {
