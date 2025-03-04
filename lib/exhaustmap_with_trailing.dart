@@ -1,5 +1,3 @@
-library exhaustmap_with_trailing;
-
 // Dart imports:
 import 'dart:async';
 

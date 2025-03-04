@@ -1,15 +1,14 @@
 name: exhaustmap_with_trailing
 description: An exhausmap implementation with trailing
-version: 1.1.0
+version: 1.2.0
 homepage: https://github.com/bjartebore/exhaustmap_with_trailing
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
-  rxdart: ^0.27.2
+  rxdart: '>=0.27.0 <1.0.0'
 
 dev_dependencies:
-  pedantic: ^1.9.0
-  test: ^1.17.12
-  import_sorter: ^4.2.2
+  test: ^1.25.15
+  flutter_lints: ^5.0.0
